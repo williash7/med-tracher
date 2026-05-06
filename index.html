@@ -346,6 +346,67 @@
     white-space: nowrap;
   }
 
+  /* ─── PAST TIME INPUT ─── */
+  .past-time-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px 14px;
+  }
+  .past-time-toggle {
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-family: 'Heebo', sans-serif;
+    padding: 0;
+  }
+  .past-time-toggle:hover { color: var(--slate); }
+  .past-time-input-wrap {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .past-time-input-wrap.open { display: flex; }
+  .past-time-input {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-size: 1rem;
+    font-family: 'Heebo', sans-serif;
+    width: 110px;
+    color: var(--slate);
+    background: #f8fafc;
+    outline: none;
+    text-align: center;
+  }
+  .past-time-input:focus { border-color: var(--lavender); }
+  .past-time-confirm {
+    padding: 7px 14px;
+    background: var(--lavender);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .past-time-confirm:active { transform: scale(0.96); }
+  .past-time-cancel {
+    padding: 7px 10px;
+    background: var(--border);
+    color: var(--muted);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
   @keyframes pulse-green {
     0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); }
     50% { box-shadow: 0 0 0 8px rgba(52,211,153,0); }
@@ -370,7 +431,7 @@
       <div class="med-icon" style="background:#fef9c3;">🟡</div>
       <div class="med-info">
         <div class="med-name">אקמול (פרצטמול)</div>
-        <div class="med-sub" id="acamol-sub">כל 6 שעות – עד 4 כדורים ביום</div>
+        <div class="med-sub" id="acamol-sub">כל 4–6 שעות – 1–2 כדורים, עד 8 כדורים ביממה</div>
       </div>
       <span id="acamol-badge" class="status-badge">⏳ בודק...</span>
     </div>
@@ -391,9 +452,17 @@
       </div>
     </div>
     <button id="acamol-btn" class="take-btn take-btn-disabled" onclick="takeMed('acamol')">✅ לחצי כאן – לקחתי אקמול עכשיו</button>
+    <div class="past-time-row">
+      <button class="past-time-toggle" onclick="togglePastTime('acamol')">🕐 לקחתי בשעה אחרת</button>
+      <div id="acamol-past-wrap" class="past-time-input-wrap">
+        <input type="time" id="acamol-past-input" class="past-time-input" />
+        <button class="past-time-confirm" onclick="takeMedPast('acamol')">רשום</button>
+        <button class="past-time-cancel" onclick="togglePastTime('acamol')">ביטול</button>
+      </div>
+    </div>
     <div class="info-box" style="margin: 0 18px 16px; border-right-color: #facc15;">
       <h3>🔍 מה זה?</h3>
-      <p>משכך כאבים עדין ויעיל לאחר ניתוח קיסרי. בטוח מאוד – אפשר לשלב עם אופטלגין ונורפן. עד 4 כדורים של 500מ"ג ביממה (או 8 כדורים של 250מ"ג).</p>
+      <p>משכך כאבים עדין ויעיל לאחר ניתוח קיסרי. <strong>1–2 כדורים כל 4–6 שעות</strong>, עד 8 כדורים ביממה. ⚠️ לאחר אופטלגין – יש להמתין 4 שעות.</p>
     </div>
   </div>
 
@@ -402,7 +471,7 @@
       <div class="med-icon" style="background:#fee2e2;">🔴</div>
       <div class="med-info">
         <div class="med-name">נורפן (איבופרופן)</div>
-        <div class="med-sub">כל 8 שעות – עד 3 כדורים ביום</div>
+        <div class="med-sub">כל 4 שעות – כדור אחד, עד 3 פעמים ביום</div>
       </div>
       <span id="nurofen-badge" class="status-badge">⏳ בודק...</span>
     </div>
@@ -423,9 +492,17 @@
       </div>
     </div>
     <button id="nurofen-btn" class="take-btn take-btn-disabled" onclick="takeMed('nurofen')">✅ לחצי כאן – לקחתי נורפן עכשיו</button>
+    <div class="past-time-row">
+      <button class="past-time-toggle" onclick="togglePastTime('nurofen')">🕐 לקחתי בשעה אחרת</button>
+      <div id="nurofen-past-wrap" class="past-time-input-wrap">
+        <input type="time" id="nurofen-past-input" class="past-time-input" />
+        <button class="past-time-confirm" onclick="takeMedPast('nurofen')">רשום</button>
+        <button class="past-time-cancel" onclick="togglePastTime('nurofen')">ביטול</button>
+      </div>
+    </div>
     <div class="info-box" style="margin: 0 18px 16px; border-right-color: #f87171;">
       <h3>🔍 מה זה?</h3>
-      <p>נוגד דלקת ומשכך כאבים. יעיל במיוחד לאחר ניתוח. יש לקחת עם אוכל קל. ⚠️ יש להמתין 2-3 ימים מהלידה לפני שמתחילים – וודאי עם הרופא/ה.</p>
+      <p>נוגד דלקת ומשכך כאבים. <strong>כדור אחד כל 4 שעות</strong>, עד 3 פעמים ביום. יש לקחת עם אוכל קל. ⚠️ יש להמתין שעתיים מאופטלגין.</p>
     </div>
   </div>
 
@@ -455,6 +532,14 @@
       </div>
     </div>
     <button id="optalgin-btn" class="take-btn take-btn-disabled" onclick="takeMed('optalgin')">✅ לחצי כאן – לקחתי אופטלגין עכשיו (20–40 טיפות)</button>
+    <div class="past-time-row">
+      <button class="past-time-toggle" onclick="togglePastTime('optalgin')">🕐 לקחתי בשעה אחרת</button>
+      <div id="optalgin-past-wrap" class="past-time-input-wrap">
+        <input type="time" id="optalgin-past-input" class="past-time-input" />
+        <button class="past-time-confirm" onclick="takeMedPast('optalgin')">רשום</button>
+        <button class="past-time-cancel" onclick="togglePastTime('optalgin')">ביטול</button>
+      </div>
+    </div>
     <div class="info-box" style="margin: 0 18px 16px; border-right-color: #60a5fa;">
       <h3>🔍 מה זה?</h3>
       <p>משכך כאבים חזק ומפחית חום. <strong>מינון: 20–40 טיפות</strong> כל 6–8 שעות, עד 3 פעמים ביום. לרוב ניתן כ"גשר" בין אקמול לנורפן. ניתן לשלב עם אקמול.</p>
@@ -478,10 +563,9 @@
   <p class="section-title">🔀 שילובים מותרים</p>
   <div class="combo-box">
     <h3>💡 מה מותר לשלב?</h3>
-    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + אופטלגין</strong> – מותר לגמרי</div>
-    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + נורפן</strong> – מותר (לפי תזמון נפרד)</div>
-    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אופטלגין + אקמול + נורפן</strong> – מותר בתזמון נכון</div>
-    <div class="combo-row"><span class="combo-no">❌</span> <strong>נורפן + אופטלגין</strong> – יש להימנע (שניהם נוגדי דלקת)</div>
+    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + נורפן</strong> – מותר (תזמון נפרד)</div>
+    <div class="combo-row"><span class="combo-no">⏳</span> <strong>אקמול + אופטלגין</strong> – יש להמתין <strong>4 שעות</strong> ביניהם</div>
+    <div class="combo-row"><span class="combo-no">⏳</span> <strong>נורפן + אופטלגין</strong> – יש להמתין <strong>שעתיים</strong> ביניהם</div>
     <div class="combo-row"><span class="combo-no">❌</span> <strong>מורפיום + אלכוהול</strong> – אסור לחלוטין</div>
     <div class="combo-row"><span class="combo-ok">✅</span> <strong>מינון הנקה:</strong> אקמול ונורפן בטוחים גם בהנקה</div>
   </div>
@@ -491,7 +575,7 @@
   <div class="limit-grid">
     <div class="limit-cell">
       <div class="limit-num" style="color:#d97706;" id="acamol-count">0</div>
-      <div style="font-size:0.7rem; color:#d97706; font-weight:700;">מתוך 4</div>
+      <div style="font-size:0.7rem; color:#d97706; font-weight:700;">מתוך 8</div>
       <div class="limit-label">אקמול<br>היום</div>
     </div>
     <div class="limit-cell">
@@ -535,8 +619,8 @@
 
 <script>
 const MEDS = {
-  acamol:  { label: 'אקמול',    emoji: '🟡', interval: 6, max: 4, color: '#facc15', badEl: 'acamol-badge',   fillEl: 'acamol-fill',   btnEl: 'acamol-btn',   cardEl: 'acamol-card',   elEl: 'acamol-elapsed',   subEl: 'acamol-sub',   countEl: 'acamol-count',   doseEl: 'acamol-dose-display',   doseMin: 1, doseMax: 2, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
-  nurofen: { label: 'נורפן',    emoji: '🔴', interval: 8, max: 3, color: '#f87171', badEl: 'nurofen-badge',  fillEl: 'nurofen-fill',  btnEl: 'nurofen-btn',  cardEl: 'nurofen-card',  elEl: 'nurofen-elapsed',  subEl: 'nurofen-sub',  countEl: 'nurofen-count',  doseEl: 'nurofen-dose-display',  doseMin: 1, doseMax: 2, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
+  acamol:  { label: 'אקמול',    emoji: '🟡', interval: 4, max: 8, color: '#facc15', badEl: 'acamol-badge',   fillEl: 'acamol-fill',   btnEl: 'acamol-btn',   cardEl: 'acamol-card',   elEl: 'acamol-elapsed',   subEl: 'acamol-sub',   countEl: 'acamol-count',   doseEl: 'acamol-dose-display',   doseMin: 1, doseMax: 2, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
+  nurofen: { label: 'נורפן',    emoji: '🔴', interval: 4, max: 3, color: '#f87171', badEl: 'nurofen-badge',  fillEl: 'nurofen-fill',  btnEl: 'nurofen-btn',  cardEl: 'nurofen-card',  elEl: 'nurofen-elapsed',  subEl: 'nurofen-sub',  countEl: 'nurofen-count',  doseEl: 'nurofen-dose-display',  doseMin: 1, doseMax: 1, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
   optalgin:{ label: 'אופטלגין', emoji: '🔵', interval: 6, max: 3, color: '#60a5fa', badEl: 'optalgin-badge', fillEl: 'optalgin-fill', btnEl: 'optalgin-btn', cardEl: 'optalgin-card', elEl: 'optalgin-elapsed', subEl: 'optalgin-sub', countEl: 'optalgin-count', doseEl: 'optalgin-dose-display', doseMin: 20, doseMax: 40, doseStep: 5, doseDefault: 20, doseUnit: 'טיפות' }
 };
 
@@ -558,6 +642,27 @@ function takeMed(id) {
   const m = MEDS[id];
   const todayCount = todayDoses(id);
   if (todayCount >= m.max) { showToast('⚠️ הגעת למינון המקסימלי להיום!'); return; }
+
+  // Cross-check between meds: { id: [[otherId, waitHours], ...] }
+  const crossRules = {
+    nurofen:  [['optalgin', 2]],
+    optalgin: [['nurofen', 2], ['acamol', 4]],
+    acamol:   [['optalgin', 4]],
+  };
+  if (crossRules[id]) {
+    for (const [otherId, waitH] of crossRules[id]) {
+      const otherLast = lastDose(otherId);
+      if (otherLast) {
+        const otherElapsed = (Date.now() - otherLast) / 3600000;
+        if (otherElapsed < waitH) {
+          const remMin = Math.round((waitH - otherElapsed) * 60);
+          showToast(`⚠️ לקחת ${MEDS[otherId].label} לאחרונה – חכי עוד ${remMin} דק'`);
+          return;
+        }
+      }
+    }
+  }
+
   const last = lastDose(id);
   if (last) {
     const elapsed = (Date.now() - last) / 3600000;
@@ -570,6 +675,58 @@ function takeMed(id) {
   save();
   updateUI();
   showToast(`✅ ${m.emoji} ${m.label} נרשמה! (${doseAmounts[id]} ${m.doseUnit})`);
+}
+
+function togglePastTime(id) {
+  const wrap = document.getElementById(id + '-past-wrap');
+  const isOpen = wrap.classList.toggle('open');
+  if (isOpen) {
+    // Pre-fill with current time
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById(id + '-past-input').value = `${hh}:${mm}`;
+  }
+}
+
+function takeMedPast(id) {
+  const m = MEDS[id];
+  const input = document.getElementById(id + '-past-input').value;
+  if (!input) { showToast('⚠️ יש להזין שעה'); return; }
+
+  const [hh, mm] = input.split(':').map(Number);
+  const t = new Date();
+  t.setHours(hh, mm, 0, 0);
+
+  // If time is in the future – assume yesterday
+  if (t.getTime() > Date.now()) t.setDate(t.getDate() - 1);
+
+  // Cross-check
+  const crossRules = {
+    nurofen:  [['optalgin', 2]],
+    optalgin: [['nurofen', 2], ['acamol', 4]],
+    acamol:   [['optalgin', 4]],
+  };
+  if (crossRules[id]) {
+    for (const [otherId, waitH] of crossRules[id]) {
+      const otherLast = lastDose(otherId);
+      if (otherLast) {
+        const diff = Math.abs(t.getTime() - otherLast) / 3600000;
+        if (diff < waitH) {
+          showToast(`⚠️ פחות מ-${waitH} שעות מ${MEDS[otherId].label} – לא ניתן לרשום`);
+          return;
+        }
+      }
+    }
+  }
+
+  history.unshift({ id, time: t.getTime(), dose: doseAmounts[id], unit: m.doseUnit, manual: true });
+  // Sort by time descending
+  history.sort((a, b) => b.time - a.time);
+  save();
+  togglePastTime(id);
+  updateUI();
+  showToast(`✅ ${m.emoji} ${m.label} נרשמה לשעה ${input}`);
 }
 
 function lastDose(id) {
@@ -605,10 +762,39 @@ function updateUI() {
     const todayCount = todayDoses(id);
     const atMax = todayCount >= m.max;
 
+    // Cross-med block check
+    const crossRules = {
+      nurofen:  [['optalgin', 2]],
+      optalgin: [['nurofen', 2], ['acamol', 4]],
+      acamol:   [['optalgin', 4]],
+    };
+    let crossBlocked = false;
+    let crossRemMin = 0;
+    let crossLabel = '';
+    if (crossRules[id]) {
+      for (const [otherId, waitH] of crossRules[id]) {
+        const otherLast = lastDose(otherId);
+        if (otherLast) {
+          const otherElapsed = (now - otherLast) / 3600000;
+          if (otherElapsed < waitH) {
+            crossBlocked = true;
+            crossRemMin = Math.round((waitH - otherElapsed) * 60);
+            crossLabel = MEDS[otherId].label;
+            break;
+          }
+        }
+      }
+    }
+
+    const canTakeNow = canTake && !atMax && !crossBlocked;
+
     // Badge
     const badge = document.getElementById(m.badEl);
     if (atMax) {
       badge.textContent = '🚫 מקסימום';
+      badge.className = 'status-badge badge-wait';
+    } else if (crossBlocked) {
+      badge.textContent = `⚠️ עוד ${crossRemMin} דק'`;
       badge.className = 'status-badge badge-wait';
     } else if (canTake) {
       badge.textContent = '✅ מותר';
@@ -636,6 +822,10 @@ function updateUI() {
       btn.textContent = `🚫 הגעת למינון מקסימלי (${m.max}/${m.max})`;
       btn.className = 'take-btn take-btn-disabled';
       btn.disabled = true;
+    } else if (crossBlocked) {
+      btn.textContent = `⚠️ לקחת ${crossLabel} לאחרונה – חכי עוד ${crossRemMin} דק'`;
+      btn.className = 'take-btn take-btn-disabled';
+      btn.disabled = true;
     } else if (canTake) {
       btn.textContent = `✅ לחצי כאן – לקחתי ${m.label} עכשיו`;
       btn.className = 'take-btn take-btn-ok';
@@ -651,7 +841,7 @@ function updateUI() {
 
     // Card border
     const card = document.getElementById(m.cardEl);
-    card.className = 'med-card ' + (canTake && !atMax ? 'can-take' : 'too-soon');
+    card.className = 'med-card ' + (canTakeNow ? 'can-take' : 'too-soon');
 
     // Count
     document.getElementById(m.countEl).textContent = todayCount;
@@ -676,9 +866,10 @@ function updateUI() {
     histEl.innerHTML = history.slice(0, 20).map(h => {
       const m = MEDS[h.id];
       const doseText = h.dose ? ` · ${h.dose} ${h.unit}` : '';
+      const manualTag = h.manual ? ' <span style="font-size:0.7rem;color:#a78bfa;">✏️ ידני</span>' : '';
       return `<div class="history-entry">
         <div class="history-dot" style="background:${m.color}"></div>
-        <span>${m.emoji} <strong>${m.label}</strong><span style="color:var(--muted);font-size:0.78rem;">${doseText}</span></span>
+        <span>${m.emoji} <strong>${m.label}</strong><span style="color:var(--muted);font-size:0.78rem;">${doseText}</span>${manualTag}</span>
         <span class="history-time">${fmtTime(h.time)}</span>
       </div>`;
     }).join('');
