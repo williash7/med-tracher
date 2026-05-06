@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💊 מעקב תרופות אחרי ניתוח קיסרי</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #f43f5e;
+    --rose-light: #fda4af;
+    --rose-pale: #fff1f2;
+    --lavender: #a78bfa;
+    --lavender-pale: #f5f3ff;
+    --mint: #34d399;
+    --mint-pale: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-pale: #fffbeb;
+    --sky: #38bdf8;
+    --sky-pale: #f0f9ff;
+    --slate: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --radius: 18px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.07);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: linear-gradient(135deg, #fdf2f8 0%, #f0f9ff 50%, #f5f3ff 100%);
+    min-height: 100vh;
+    color: var(--slate);
+    padding-bottom: 40px;
+  }
+
+  header {
+    background: linear-gradient(135deg, #f43f5e, #a78bfa);
+    color: white;
+    padding: 28px 20px 22px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(244,63,94,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -20px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; }
+  header p { font-size: 0.9rem; opacity: 0.88; margin-top: 4px; font-weight: 300; }
+
+  .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 24px 0 10px;
+  }
+
+  /* ─── MED CARDS ─── */
+  .med-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    overflow: hidden;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .med-card.can-take { border-color: var(--mint); }
+  .med-card.too-soon { border-color: var(--rose-light); }
+
+  .med-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .med-icon {
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .med-info { flex: 1; }
+  .med-name { font-size: 1.05rem; font-weight: 700; }
+  .med-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  .status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge-ok { background: var(--mint-pale); color: #059669; }
+  .badge-wait { background: var(--rose-pale); color: var(--rose); }
+  .badge-morphine { background: var(--lavender-pale); color: #7c3aed; }
+
+  .progress-row {
+    padding: 0 18px 14px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease;
+  }
+
+  .take-btn {
+    width: calc(100% - 36px);
+    margin: 0 18px 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .take-btn:active { transform: scale(0.97); }
+  .take-btn-ok {
+    background: linear-gradient(135deg, var(--mint), #10b981);
+    color: white;
+    box-shadow: 0 4px 14px rgba(52,211,153,0.4);
+  }
+  .take-btn-disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    border-right: 4px solid var(--amber);
+  }
+  .info-box h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .info-box p, .info-box li {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .info-box ul { padding-right: 18px; }
+  .info-box li { margin-bottom: 3px; }
+
+  /* ─── HISTORY ─── */
+  .history-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--card);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    font-size: 0.85rem;
+  }
+  .history-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .history-time { color: var(--muted); font-size: 0.78rem; margin-right: auto; }
+
+  /* ─── COMBO SECTION ─── */
+  .combo-box {
+    background: linear-gradient(135deg, #fdf4ff, #eff6ff);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1.5px solid #e9d5ff;
+  }
+  .combo-box h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; }
+  .combo-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.83rem;
+  }
+  .combo-row:last-child { border-bottom: none; }
+  .combo-ok { color: #059669; font-size: 1rem; }
+  .combo-no { color: var(--rose); font-size: 1rem; }
+
+  /* ─── ALERTS ─── */
+  .alert {
+    background: #fff7ed;
+    border: 1.5px solid #fed7aa;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.83rem;
+    color: #92400e;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* ─── MORPHINE ─── */
+  .morphine-card {
+    background: linear-gradient(135deg, #f5f3ff, #fdf2f8);
+    border: 1.5px solid #c4b5fd;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .morphine-card h3 { font-size: 1rem; font-weight: 800; color: #7c3aed; margin-bottom: 8px; }
+
+  /* ─── DAILY LIMIT ─── */
+  .limit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .limit-cell {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .limit-num { font-size: 1.6rem; font-weight: 900; }
+  .limit-label { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--slate);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .empty-history { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 16px; }
+
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+  /* ─── DOSE SELECTOR ─── */
+  .dose-selector {
+    padding: 0 18px 14px;
+  }
+  .dose-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .dose-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dose-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-family: 'Heebo', sans-serif;
+  }
+  .dose-btn:active { transform: scale(0.9); }
+  .dose-btn:hover { border-color: var(--mint); }
+  .dose-display {
+    flex: 1;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--slate);
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 6px 0;
+    border: 2px solid var(--border);
+  }
+  .dose-unit {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(52,211,153,0); }
+  }
+  .med-card.can-take { animation: pulse-green 2s infinite; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💊 מעקב תרופות – אחרי ניתוח קיסרי</h1>
+  <p>לריפוי מהיר עם אהבה ❤️</p>
+</header>
+
+<div class="container">
+
+  <!-- MEDS -->
+  <p class="section-title">🕐 מתי מותר לקחת?</p>
+
+  <div id="acamol-card" class="med-card">
+    <div class="med-header">
+      <div class="med-icon" style="background:#fef9c3;">🟡</div>
+      <div class="med-info">
+        <div class="med-name">אקמול (פרצטמול)</div>
+        <div class="med-sub" id="acamol-sub">כל 6 שעות – עד 4 כדורים ביום</div>
+      </div>
+      <span id="acamol-badge" class="status-badge">⏳ בודק...</span>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label">
+        <span>מאז הכדור האחרון</span>
+        <span id="acamol-elapsed">-</span>
+      </div>
+      <div class="progress-bar"><div id="acamol-fill" class="progress-fill" style="background:#facc15; width:0%"></div></div>
+    </div>
+    <div class="dose-selector">
+      <div class="dose-label">כמה כדורים לקחת?</div>
+      <div class="dose-row">
+        <button class="dose-btn" onclick="changeDose('acamol',-1)">−</button>
+        <div class="dose-display" id="acamol-dose-display">1</div>
+        <button class="dose-btn" onclick="changeDose('acamol',1)">+</button>
+        <span class="dose-unit">כדורים (500מ"ג)</span>
+      </div>
+    </div>
+    <button id="acamol-btn" class="take-btn take-btn-disabled" onclick="takeMed('acamol')">✅ לחצי כאן – לקחתי אקמול עכשיו</button>
+    <div class="info-box" style="margin: 0 18px 16px; border-right-color: #facc15;">
+      <h3>🔍 מה זה?</h3>
+      <p>משכך כאבים עדין ויעיל לאחר ניתוח קיסרי. בטוח מאוד – אפשר לשלב עם אופטלגין ונורפן. עד 4 כדורים של 500מ"ג ביממה (או 8 כדורים של 250מ"ג).</p>
+    </div>
+  </div>
+
+  <div id="nurofen-card" class="med-card">
+    <div class="med-header">
+      <div class="med-icon" style="background:#fee2e2;">🔴</div>
+      <div class="med-info">
+        <div class="med-name">נורפן (איבופרופן)</div>
+        <div class="med-sub">כל 8 שעות – עד 3 כדורים ביום</div>
+      </div>
+      <span id="nurofen-badge" class="status-badge">⏳ בודק...</span>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label">
+        <span>מאז הכדור האחרון</span>
+        <span id="nurofen-elapsed">-</span>
+      </div>
+      <div class="progress-bar"><div id="nurofen-fill" class="progress-fill" style="background:#f87171; width:0%"></div></div>
+    </div>
+    <div class="dose-selector">
+      <div class="dose-label">כמה כדורים לקחת?</div>
+      <div class="dose-row">
+        <button class="dose-btn" onclick="changeDose('nurofen',-1)">−</button>
+        <div class="dose-display" id="nurofen-dose-display">1</div>
+        <button class="dose-btn" onclick="changeDose('nurofen',1)">+</button>
+        <span class="dose-unit">כדורים (200מ"ג)</span>
+      </div>
+    </div>
+    <button id="nurofen-btn" class="take-btn take-btn-disabled" onclick="takeMed('nurofen')">✅ לחצי כאן – לקחתי נורפן עכשיו</button>
+    <div class="info-box" style="margin: 0 18px 16px; border-right-color: #f87171;">
+      <h3>🔍 מה זה?</h3>
+      <p>נוגד דלקת ומשכך כאבים. יעיל במיוחד לאחר ניתוח. יש לקחת עם אוכל קל. ⚠️ יש להמתין 2-3 ימים מהלידה לפני שמתחילים – וודאי עם הרופא/ה.</p>
+    </div>
+  </div>
+
+  <div id="optalgin-card" class="med-card">
+    <div class="med-header">
+      <div class="med-icon" style="background:#dbeafe;">🔵</div>
+      <div class="med-info">
+        <div class="med-name">אופטלגין (מטמיזול)</div>
+        <div class="med-sub">כל 6–8 שעות – 20–40 טיפות, עד 3 פעמים ביום</div>
+      </div>
+      <span id="optalgin-badge" class="status-badge">⏳ בודק...</span>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label">
+        <span>מאז הכדור האחרון</span>
+        <span id="optalgin-elapsed">-</span>
+      </div>
+      <div class="progress-bar"><div id="optalgin-fill" class="progress-fill" style="background:#60a5fa; width:0%"></div></div>
+    </div>
+    <div class="dose-selector">
+      <div class="dose-label">כמה טיפות לקחת?</div>
+      <div class="dose-row">
+        <button class="dose-btn" onclick="changeDose('optalgin',-5)">−</button>
+        <div class="dose-display" id="optalgin-dose-display">20</div>
+        <button class="dose-btn" onclick="changeDose('optalgin',5)">+</button>
+        <span class="dose-unit">טיפות (מינון: 20–40)</span>
+      </div>
+    </div>
+    <button id="optalgin-btn" class="take-btn take-btn-disabled" onclick="takeMed('optalgin')">✅ לחצי כאן – לקחתי אופטלגין עכשיו (20–40 טיפות)</button>
+    <div class="info-box" style="margin: 0 18px 16px; border-right-color: #60a5fa;">
+      <h3>🔍 מה זה?</h3>
+      <p>משכך כאבים חזק ומפחית חום. <strong>מינון: 20–40 טיפות</strong> כל 6–8 שעות, עד 3 פעמים ביום. לרוב ניתן כ"גשר" בין אקמול לנורפן. ניתן לשלב עם אקמול.</p>
+    </div>
+  </div>
+
+  <!-- MORPHINE -->
+  <p class="section-title">💉 מורפיום</p>
+  <div class="morphine-card">
+    <h3>💉 מורפיום – ניתן בבית חולים בלבד</h3>
+    <p style="font-size:0.84rem; color:#6d28d9; line-height:1.7;">
+      קיבלת מורפיום בשעה 00:00. <strong>תרופה זו ניתנת אך ורק על ידי הצוות הרפואי</strong> – לא לוקחים לבד.<br><br>
+      ⏰ משך הפעולה: 4–6 שעות<br>
+      🚫 לא לשלב עם אלכוהול<br>
+      😴 עלולה לגרום לנמנום – זה נורמלי
+    </p>
+    <div id="morphine-timer" style="margin-top:12px; padding:10px; background:rgba(124,58,237,0.1); border-radius:10px; font-size:0.85rem; color:#7c3aed; font-weight:600; text-align:center;"></div>
+  </div>
+
+  <!-- COMBO TABLE -->
+  <p class="section-title">🔀 שילובים מותרים</p>
+  <div class="combo-box">
+    <h3>💡 מה מותר לשלב?</h3>
+    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + אופטלגין</strong> – מותר לגמרי</div>
+    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + נורפן</strong> – מותר (לפי תזמון נפרד)</div>
+    <div class="combo-row"><span class="combo-ok">✅</span> <strong>אופטלגין + אקמול + נורפן</strong> – מותר בתזמון נכון</div>
+    <div class="combo-row"><span class="combo-no">❌</span> <strong>נורפן + אופטלגין</strong> – יש להימנע (שניהם נוגדי דלקת)</div>
+    <div class="combo-row"><span class="combo-no">❌</span> <strong>מורפיום + אלכוהול</strong> – אסור לחלוטין</div>
+    <div class="combo-row"><span class="combo-ok">✅</span> <strong>מינון הנקה:</strong> אקמול ונורפן בטוחים גם בהנקה</div>
+  </div>
+
+  <!-- DAILY LIMITS -->
+  <p class="section-title">📊 מינון מקסימלי ליממה</p>
+  <div class="limit-grid">
+    <div class="limit-cell">
+      <div class="limit-num" style="color:#d97706;" id="acamol-count">0</div>
+      <div style="font-size:0.7rem; color:#d97706; font-weight:700;">מתוך 4</div>
+      <div class="limit-label">אקמול<br>היום</div>
+    </div>
+    <div class="limit-cell">
+      <div class="limit-num" style="color:#dc2626;" id="nurofen-count">0</div>
+      <div style="font-size:0.7rem; color:#dc2626; font-weight:700;">מתוך 3</div>
+      <div class="limit-label">נורפן<br>היום</div>
+    </div>
+    <div class="limit-cell">
+      <div class="limit-num" style="color:#2563eb;" id="optalgin-count">0</div>
+      <div style="font-size:0.7rem; color:#2563eb; font-weight:700;">מתוך 3</div>
+      <div class="limit-label">אופטלגין<br>היום</div>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert">
+    <span>⚠️</span>
+    <span>אם הכאב חזק מאוד ולא מוקל – <strong>פני מיד לצוות הרפואי</strong>. אל תגדילי מינון לבד.</span>
+  </div>
+
+  <!-- HISTORY -->
+  <p class="section-title">📋 היסטוריה</p>
+  <div id="history-list"><div class="empty-history">עדיין לא נרשמו תרופות</div></div>
+
+  <!-- TIPS -->
+  <p class="section-title">💡 טיפים לריפוי מהיר</p>
+  <div class="info-box">
+    <h3>🌸 כדאי לדעת</h3>
+    <ul>
+      <li>קחי תרופות <strong>לפי לוח זמנים</strong> – לא רק כשהכאב מגיע, זה יעיל יותר</li>
+      <li>שתי הרבה מים עם כל כדור</li>
+      <li>נורפן – עדיף עם כיכר לחם קטנה</li>
+      <li>מנוחה חשובה לריפוי – אל תמשכי גב 💪</li>
+      <li>הזמן כואב – אבל זה עובר! תוך 3-5 ימים זה הרבה יותר נסבל</li>
+    </ul>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const MEDS = {
+  acamol:  { label: 'אקמול',    emoji: '🟡', interval: 6, max: 4, color: '#facc15', badEl: 'acamol-badge',   fillEl: 'acamol-fill',   btnEl: 'acamol-btn',   cardEl: 'acamol-card',   elEl: 'acamol-elapsed',   subEl: 'acamol-sub',   countEl: 'acamol-count',   doseEl: 'acamol-dose-display',   doseMin: 1, doseMax: 2, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
+  nurofen: { label: 'נורפן',    emoji: '🔴', interval: 8, max: 3, color: '#f87171', badEl: 'nurofen-badge',  fillEl: 'nurofen-fill',  btnEl: 'nurofen-btn',  cardEl: 'nurofen-card',  elEl: 'nurofen-elapsed',  subEl: 'nurofen-sub',  countEl: 'nurofen-count',  doseEl: 'nurofen-dose-display',  doseMin: 1, doseMax: 2, doseStep: 1, doseDefault: 1, doseUnit: 'כדור'    },
+  optalgin:{ label: 'אופטלגין', emoji: '🔵', interval: 6, max: 3, color: '#60a5fa', badEl: 'optalgin-badge', fillEl: 'optalgin-fill', btnEl: 'optalgin-btn', cardEl: 'optalgin-card', elEl: 'optalgin-elapsed', subEl: 'optalgin-sub', countEl: 'optalgin-count', doseEl: 'optalgin-dose-display', doseMin: 20, doseMax: 40, doseStep: 5, doseDefault: 20, doseUnit: 'טיפות' }
+};
+
+// Dose state per med
+const doseAmounts = { acamol: 1, nurofen: 1, optalgin: 20 };
+
+function changeDose(id, delta) {
+  const m = MEDS[id];
+  doseAmounts[id] = Math.min(m.doseMax, Math.max(m.doseMin, doseAmounts[id] + delta));
+  document.getElementById(m.doseEl).textContent = doseAmounts[id];
+}
+
+let history = JSON.parse(localStorage.getItem('med_history') || '[]');
+const MORPHINE_TIME = new Date(); MORPHINE_TIME.setHours(0,0,0,0);
+
+function save() { localStorage.setItem('med_history', JSON.stringify(history)); }
+
+function takeMed(id) {
+  const m = MEDS[id];
+  const todayCount = todayDoses(id);
+  if (todayCount >= m.max) { showToast('⚠️ הגעת למינון המקסימלי להיום!'); return; }
+  const last = lastDose(id);
+  if (last) {
+    const elapsed = (Date.now() - last) / 3600000;
+    if (elapsed < m.interval) {
+      showToast('⏳ עדיין מוקדם מדי לתרופה זו');
+      return;
+    }
+  }
+  history.unshift({ id, time: Date.now(), dose: doseAmounts[id], unit: m.doseUnit });
+  save();
+  updateUI();
+  showToast(`✅ ${m.emoji} ${m.label} נרשמה! (${doseAmounts[id]} ${m.doseUnit})`);
+}
+
+function lastDose(id) {
+  const d = history.find(h => h.id === id);
+  return d ? d.time : null;
+}
+
+function todayDoses(id) {
+  const midnight = new Date(); midnight.setHours(0,0,0,0);
+  return history.filter(h => h.id === id && h.time >= midnight.getTime()).length;
+}
+
+function fmt(ms) {
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  if (h > 0) return `${h} שע' ${m} דק'`;
+  return `${m} דקות`;
+}
+
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+}
+
+function updateUI() {
+  const now = Date.now();
+
+  // Meds
+  for (const [id, m] of Object.entries(MEDS)) {
+    const last = lastDose(id);
+    const elapsed = last ? (now - last) / 3600000 : null;
+    const canTake = elapsed === null || elapsed >= m.interval;
+    const todayCount = todayDoses(id);
+    const atMax = todayCount >= m.max;
+
+    // Badge
+    const badge = document.getElementById(m.badEl);
+    if (atMax) {
+      badge.textContent = '🚫 מקסימום';
+      badge.className = 'status-badge badge-wait';
+    } else if (canTake) {
+      badge.textContent = '✅ מותר';
+      badge.className = 'status-badge badge-ok';
+    } else {
+      const remaining = m.interval - elapsed;
+      const h = Math.floor(remaining);
+      const min = Math.round((remaining - h) * 60);
+      badge.textContent = `⏳ עוד ${h > 0 ? h+'ש' : ''} ${min}ד`;
+      badge.className = 'status-badge badge-wait';
+    }
+
+    // Progress
+    const fill = document.getElementById(m.fillEl);
+    const pct = elapsed === null ? 0 : Math.min((elapsed / m.interval) * 100, 100);
+    fill.style.width = pct + '%';
+
+    // Elapsed label
+    const elEl = document.getElementById(m.elEl);
+    elEl.textContent = elapsed === null ? 'לא נלקחה עדיין' : fmt(now - last);
+
+    // Button
+    const btn = document.getElementById(m.btnEl);
+    if (atMax) {
+      btn.textContent = `🚫 הגעת למינון מקסימלי (${m.max}/${m.max})`;
+      btn.className = 'take-btn take-btn-disabled';
+      btn.disabled = true;
+    } else if (canTake) {
+      btn.textContent = `✅ לחצי כאן – לקחתי ${m.label} עכשיו`;
+      btn.className = 'take-btn take-btn-ok';
+      btn.disabled = false;
+    } else {
+      const remaining = m.interval - elapsed;
+      const h = Math.floor(remaining);
+      const min = Math.round((remaining - h) * 60);
+      btn.textContent = `⏳ עוד ${h > 0 ? h+' שעות ' : ''}${min} דקות`;
+      btn.className = 'take-btn take-btn-disabled';
+      btn.disabled = true;
+    }
+
+    // Card border
+    const card = document.getElementById(m.cardEl);
+    card.className = 'med-card ' + (canTake && !atMax ? 'can-take' : 'too-soon');
+
+    // Count
+    document.getElementById(m.countEl).textContent = todayCount;
+  }
+
+  // Morphine timer
+  const morphineEl = document.getElementById('morphine-timer');
+  const morphineElapsed = (now - MORPHINE_TIME.getTime()) / 3600000;
+  if (morphineElapsed < 6) {
+    const rem = 6 - morphineElapsed;
+    const h = Math.floor(rem), min = Math.round((rem - h) * 60);
+    morphineEl.textContent = `⏳ עוד ${h > 0 ? h+' שעות ו-' : ''}${min} דקות עד שהמורפיום מתפוגג`;
+  } else {
+    morphineEl.textContent = `✅ המורפיום התפוגג – ניתן לקחת תרופות רגילות`;
+  }
+
+  // History
+  const histEl = document.getElementById('history-list');
+  if (history.length === 0) {
+    histEl.innerHTML = '<div class="empty-history">עדיין לא נרשמו תרופות</div>';
+  } else {
+    histEl.innerHTML = history.slice(0, 20).map(h => {
+      const m = MEDS[h.id];
+      const doseText = h.dose ? ` · ${h.dose} ${h.unit}` : '';
+      return `<div class="history-entry">
+        <div class="history-dot" style="background:${m.color}"></div>
+        <span>${m.emoji} <strong>${m.label}</strong><span style="color:var(--muted);font-size:0.78rem;">${doseText}</span></span>
+        <span class="history-time">${fmtTime(h.time)}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init
+updateUI();
+setInterval(updateUI, 30000); // update every 30 sec
+</script>
+</body>
+</html>
