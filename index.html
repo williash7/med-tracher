@@ -462,7 +462,7 @@
     </div>
     <div class="info-box" style="margin: 0 18px 16px; border-right-color: #facc15;">
       <h3>🔍 מה זה?</h3>
-      <p>משכך כאבים עדין ויעיל לאחר ניתוח קיסרי. <strong>1–2 כדורים כל 4–6 שעות</strong>, עד 8 כדורים ביממה. ⚠️ לאחר אופטלגין – יש להמתין 4 שעות.</p>
+      <p>משכך כאבים עדין ויעיל לאחר ניתוח קיסרי. <strong>1–2 כדורים כל 4–6 שעות</strong>, עד 8 כדורים ביממה. ⚠️ לאחר אופטלגין – יש להמתין שעתיים.</p>
     </div>
   </div>
 
@@ -564,7 +564,7 @@
   <div class="combo-box">
     <h3>💡 מה מותר לשלב?</h3>
     <div class="combo-row"><span class="combo-ok">✅</span> <strong>אקמול + נורפן</strong> – מותר (תזמון נפרד)</div>
-    <div class="combo-row"><span class="combo-no">⏳</span> <strong>אקמול + אופטלגין</strong> – יש להמתין <strong>4 שעות</strong> ביניהם</div>
+    <div class="combo-row"><span class="combo-no">⏳</span> <strong>אקמול + אופטלגין</strong> – יש להמתין <strong>שעתיים</strong> ביניהם</div>
     <div class="combo-row"><span class="combo-no">⏳</span> <strong>נורפן + אופטלגין</strong> – יש להמתין <strong>שעתיים</strong> ביניהם</div>
     <div class="combo-row"><span class="combo-no">❌</span> <strong>מורפיום + אלכוהול</strong> – אסור לחלוטין</div>
     <div class="combo-row"><span class="combo-ok">✅</span> <strong>מינון הנקה:</strong> אקמול ונורפן בטוחים גם בהנקה</div>
@@ -646,8 +646,8 @@ function takeMed(id) {
   // Cross-check between meds: { id: [[otherId, waitHours], ...] }
   const crossRules = {
     nurofen:  [['optalgin', 2]],
-    optalgin: [['nurofen', 2], ['acamol', 4]],
-    acamol:   [['optalgin', 4]],
+    optalgin: [['nurofen', 2], ['acamol', 2]],
+    acamol:   [['optalgin', 2]],
   };
   if (crossRules[id]) {
     for (const [otherId, waitH] of crossRules[id]) {
@@ -704,8 +704,8 @@ function takeMedPast(id) {
   // Cross-check
   const crossRules = {
     nurofen:  [['optalgin', 2]],
-    optalgin: [['nurofen', 2], ['acamol', 4]],
-    acamol:   [['optalgin', 4]],
+    optalgin: [['nurofen', 2], ['acamol', 2]],
+    acamol:   [['optalgin', 2]],
   };
   if (crossRules[id]) {
     for (const [otherId, waitH] of crossRules[id]) {
@@ -765,8 +765,8 @@ function updateUI() {
     // Cross-med block check
     const crossRules = {
       nurofen:  [['optalgin', 2]],
-      optalgin: [['nurofen', 2], ['acamol', 4]],
-      acamol:   [['optalgin', 4]],
+      optalgin: [['nurofen', 2], ['acamol', 2]],
+      acamol:   [['optalgin', 2]],
     };
     let crossBlocked = false;
     let crossRemMin = 0;
